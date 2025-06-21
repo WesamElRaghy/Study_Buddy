@@ -14,3 +14,4 @@ models/*.gguf
 .env
 .vscode/
 .idea/
+llama.cpp/

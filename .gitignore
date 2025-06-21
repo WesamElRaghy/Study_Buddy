@@ -1,0 +1,16 @@
+# Virtual environment
+llama.cpp/venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large model files
+models/*.gguf
+*.bin
+*.gguf
+
+# Environment and IDE files
+.env
+.vscode/
+.idea/

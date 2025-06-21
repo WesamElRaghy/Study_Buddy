@@ -11,7 +11,6 @@ A local, offline study assistant powered by Mistral 7B that runs entirely on you
 
 ## Requirements
 
-- Ubuntu (or other Linux distribution)
 - Python 3.8+
 - ~8GB RAM minimum (16GB recommended)
 

@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import time
 from ct_backend import StudyBuddyBackend
 
 st.set_page_config(
@@ -33,8 +34,13 @@ Ask it to solve problems step-by-step or generate similar practice questions!
 # Sidebar for settings
 with st.sidebar:
     st.header("Settings")
-    temperature = st.slider("Temperature (Creativity)", min_value=0.1, max_value=1.0, value=0.7, step=0.1,
-                          help="Higher values make responses more creative, lower values make them more deterministic")
+    
+    # Lower default temperature for faster responses
+    temperature = st.slider("Response Speed", min_value=0.1, max_value=0.7, value=0.2, step=0.1,
+                          help="Lower values (0.1-0.3) produce much faster responses.")
+    
+    # Add a performance tip
+    st.warning("⚡ For fastest performance, keep the Response Speed at 0.1-0.2")
     
     st.header("About")
     st.markdown("""
@@ -60,13 +66,25 @@ with tab1:
         if "time_taken" in st.session_state:
             st.info(f"Response generated in {st.session_state.time_taken} seconds")
     
+    # Create a placeholder for the solution
+    solution_placeholder = st.empty()
+    
     if solve_button and question_input:
-        with st.spinner("Thinking..."):
-            result = st.session_state.backend.answer_question(question_input, temperature)
-            st.session_state.time_taken = result["time_taken"]
+        # Show thinking message
+        solution_placeholder.markdown("### Solution:\nThinking...")
         
-        st.markdown("### Solution:")
-        st.markdown(result["answer"])
+        # Get the full response
+        result = st.session_state.backend.answer_question(question_input, temperature)
+        full_text = result["answer"]
+        st.session_state.time_taken = result["time_taken"]
+        
+        # Display the answer incrementally
+        for i in range(1, len(full_text) + 1, 3):  # Display 3 chars at a time for speed
+            solution_placeholder.markdown(f"### Solution:\n{full_text[:i]}")
+            time.sleep(0.01)  # Small delay for visual effect
+        
+        # Final complete display
+        solution_placeholder.markdown(f"### Solution:\n{full_text}")
         
 with tab2:
     st.header("Practice Question Generator")
@@ -79,11 +97,22 @@ with tab2:
     
     generate_button = st.button("Generate Practice Questions", type="primary")
     
+    # Create a placeholder for the questions
+    questions_placeholder = st.empty()
+    
     if generate_button and reference_question:
-        with st.spinner("Generating similar questions..."):
-            practice_questions = st.session_state.backend.generate_practice_questions(
-                reference_question, num_questions, temperature
-            )
+        # Show thinking message
+        questions_placeholder.markdown("### Similar Practice Questions:\nThinking...")
         
-        st.markdown("### Similar Practice Questions:")
-        st.markdown(practice_questions)
+        # Get the practice questions
+        practice_questions = st.session_state.backend.generate_practice_questions(
+            reference_question, num_questions, temperature
+        )
+        
+        # Display incrementally
+        for i in range(1, len(practice_questions) + 1, 3):  # Display 3 chars at a time
+            questions_placeholder.markdown(f"### Similar Practice Questions:\n{practice_questions[:i]}")
+            time.sleep(0.01)  # Small delay for visual effect
+        
+        # Final complete display
+        questions_placeholder.markdown(f"### Similar Practice Questions:\n{practice_questions}")

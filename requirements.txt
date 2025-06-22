@@ -1,3 +1,14 @@
 streamlit
 ctransformers
+Pillow
+pytesseract
+pdf2image
+PyPDF2
+langchain
+langchain-community
+faiss-cpu
+sentence-transformers
+fpdf2
 huggingface_hub
+tf-keras
+keras==2.15.0
